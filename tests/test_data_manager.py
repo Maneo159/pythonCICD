@@ -1,5 +1,6 @@
 import pytest
-from app.data_manager import DataManager
+from data_manager import DataManager
+
 
 @pytest.fixture
 def data_manager():
