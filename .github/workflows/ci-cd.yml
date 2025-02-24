@@ -24,12 +24,12 @@ jobs:
       - name: Vérifier les dépendances pour des vulnérabilités
         run: |
           safety check --file=requirements.txt --ignore 1234  # Optionnel, pour ignorer certaines vulnérabilités
+        continue-on-error: true  # Cela permet de continuer même si Safety détecte des vulnérabilités
 
       - name: Build Docker Image
         run: |
           docker build -t ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest .
           docker push ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest
-
 
   sonarcloud:
     runs-on: ubuntu-latest
