@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mon-projet-deployment
+spec:
+  replicas: 3  # Nombre d'instances
+  selector:
+    matchLabels:
+      app: mon-projet
+  template:
+    metadata:
+      labels:
+        app: mon-projet
+    spec:
+      containers:
+      - name: mon-projet-container
+        image: ton_nom_utilisateur/mon_projet:latest
+        ports:
+        - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mon-projet-service
+spec:
+  selector:
+    app: mon-projet
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+  type: LoadBalancer
