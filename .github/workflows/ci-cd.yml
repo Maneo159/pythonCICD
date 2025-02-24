@@ -1,32 +1,19 @@
-name: Build and Deploy Docker Image
+name: Deploy to Server
 
 on:
   push:
     branches:
-      - main  # Déclenche le workflow sur un push vers la branche principale
+      - main  # ou la branche sur laquelle tu veux déployer
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
-
-    - name: Cache Docker layers
-      uses: actions/cache@v2
-      with:
-        path: /tmp/.buildx-cache
-        key: ${{ runner.os }}-buildx-${{ github.sha }}
-        restore-keys: |
-          ${{ runner.os }}-buildx-
-
-    - name: Build Docker image
-      run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/mon_projet .
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v2
 
     - name: Log in to Docker Hub
       uses: docker/login-action@v2
@@ -34,9 +21,10 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Push Docker image to Docker Hub
+    - name: Build and push Docker image
       run: |
-        docker push ${{ secrets.DOCKER_USERNAME }}/mon_projet
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest .
+        docker push ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest
 
   deploy:
     runs-on: ubuntu-latest
@@ -44,5 +32,4 @@ jobs:
     steps:
     - name: Deploy to Server
       run: |
-        ssh -i ${{ secrets.SSH_PRIVATE_KEY }} localhost@<server-ip> 'docker pull ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest && docker run -p 5000:5000 ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest'
-
+        ssh -i ${{ secrets.SSH_PRIVATE_KEY }} user@server-ip 'docker pull ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest && docker run -p 5000:5000 ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest'
