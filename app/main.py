@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from app.data_manager import DataManager
+from data_manager import DataManager
 from flasgger import Swagger
 
 app = Flask(__name__)
