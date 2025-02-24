@@ -26,12 +26,7 @@ jobs:
         docker build -t ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest .
         docker push ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest
 
-    - name: Install SonarScanner
-      run: |
-        curl -sSLo sonar-scanner-cli.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
-        unzip sonar-scanner-cli.zip
-        export PATH=$PWD/sonar-scanner-5.0.1.3006-linux/bin:$PATH
-
+    
 
 
   sonarcloud:
@@ -40,6 +35,13 @@ jobs:
     steps:
     - name: Checkout du code
       uses: actions/checkout@v3
+
+    - name: Install SonarScanner
+        run: |
+          curl -sSLo sonar-scanner-cli.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
+          unzip sonar-scanner-cli.zip
+          export PATH=$PWD/sonar-scanner-5.0.1.3006-linux/bin:$PATH
+
 
     - name: Analyse SonarCloud
       run: |
