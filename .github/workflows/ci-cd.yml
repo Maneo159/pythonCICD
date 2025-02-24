@@ -36,11 +36,12 @@ jobs:
     - name: Analyse SonarCloud
       run: |
         sonar-scanner \
-          -Dsonar.organization=MON_ORGANISATION \
-          -Dsonar.projectKey=MON_PROJET \
+          -Dsonar.organization=Maneo159 \
+          -Dsonar.projectKey=pythonCICD \
           -Dsonar.sources=. \
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+
 
   deploy:
     runs-on: ubuntu-latest
