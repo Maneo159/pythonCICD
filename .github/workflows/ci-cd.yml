@@ -26,8 +26,6 @@ jobs:
         docker build -t ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest .
         docker push ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest
 
-    
-
 
   sonarcloud:
     runs-on: ubuntu-latest
