@@ -39,12 +39,13 @@ jobs:
         # Télécharger et décompresser le scanner
         curl -sSLo sonar-scanner-cli.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
         unzip sonar-scanner-cli.zip
-        # Ajouter le binaire au PATH (export dans le même shell)
+        # Ajouter le binaire au PATH
         echo "export PATH=$PWD/sonar-scanner-5.0.1.3006-linux/bin:$PATH" >> $GITHUB_ENV
         # Vérifier si le binaire est bien installé
+        echo "Vérification du PATH : $PATH"
         echo "Vérification de l'installation du sonar-scanner..."
-        sonar-scanner --version || exit 1
-        echo "Installation du sonar-scanner terminée."
+        which sonar-scanner || exit 1  # Vérifie si le binaire est bien trouvé
+        sonar-scanner --version || exit 1  # Affiche la version du scanner
 
     - name: Analyse SonarCloud
       run: |
