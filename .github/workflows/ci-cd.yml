@@ -40,10 +40,12 @@ jobs:
         curl -sSLo sonar-scanner-cli.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
         unzip sonar-scanner-cli.zip
         # Ajouter le binaire au PATH
-        echo "export PATH=$PWD/sonar-scanner-5.0.1.3006-linux/bin:$PATH" >> $GITHUB_ENV
-        # Vérifier si le binaire est bien installé
+        export PATH=$PWD/sonar-scanner-5.0.1.3006-linux/bin:$PATH
+        # Vérification du répertoire où se trouve sonar-scanner
+        echo "Contenu du répertoire où le sonar-scanner a été installé :"
+        ls -al $PWD/sonar-scanner-5.0.1.3006-linux/bin
+        # Vérifier si sonar-scanner est dans le PATH
         echo "Vérification du PATH : $PATH"
-        echo "Vérification de l'installation du sonar-scanner..."
         which sonar-scanner || exit 1  # Vérifie si le binaire est bien trouvé
         sonar-scanner --version || exit 1  # Affiche la version du scanner
 
