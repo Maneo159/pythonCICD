@@ -1,16 +1,15 @@
-FROM python:3.9
+FROM python:3.9-slim
 
-# Définir le répertoire de travail
 WORKDIR /app
 
-# Copier les fichiers dans le conteneur
+# Copier tous les fichiers dans le répertoire /app
 COPY . /app
 
 # Installer les dépendances
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 
-# Exposer le port 5000
+# Exposer le port
 EXPOSE 5000
 
-# Lancer l'application
+# Commande pour démarrer l'application
 CMD ["python", "main.py"]
