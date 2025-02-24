@@ -1,75 +1,35 @@
-name: CI/CD Pipeline
+name: Deploy to Server
 
 on:
   push:
     branches:
-      - main  # Déclenche le workflow à chaque push sur main
-  pull_request:
-    branches:
-      - main
+      - main  # ou la branche sur laquelle tu veux déployer
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Set up JDK 17 (obligatoire pour SonarCloud)
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '17'
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v2
 
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@v2
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+    - name: Build and push Docker image
+      run: |
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest .
+        docker push ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest
 
-      - name: Build and push Docker image
-        run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest .
-          docker push ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest
-
-  code_analysis:
-    runs-on: ubuntu-latest
-    needs: build  # Exécuter après le build
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Install Sonar Scanner
-        run: |
-          curl -fsSL -o sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
-          unzip sonar-scanner.zip
-          echo "$(pwd)/sonar-scanner-5.0.1.3006-linux/bin" >> $GITHUB_PATH
-
-      - name: Run SonarCloud Scan
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          sonar-scanner \
-            -Dsonar.organization=Maneo159 \
-            -Dsonar.projectKey=pythonCICD \
-            -Dsonar.sources=. \
-            -Dsonar.host.url=https://sonarcloud.io
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: code_analysis  # Exécuter après SonarCloud
-    steps:
-      - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Deploy to Server
-          run: |
-            docker pull ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest
-            docker stop mon_projet || true
-            docker rm mon_projet || true
-            docker run -d -p 5000:5000 --name mon_projet ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest
+    - name: Deploy to Server
+      run: |
+        docker pull ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest
+        docker stop mon_projet || true
+        docker rm mon_projet || true
+        docker run -d -p 5000:5000 --name mon_projet ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest
+ 
