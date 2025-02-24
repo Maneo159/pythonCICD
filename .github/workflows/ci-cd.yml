@@ -37,4 +37,5 @@ jobs:
 
     - name: Deploy to Server
       run: |
-        ssh -o StrictHostKeyChecking=no localhost@172.0.0.1:5000 'docker pull ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest && docker run -p 5000:5000 ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest'
+        # Connexion SSH au serveur pour déployer l'application
+        ssh -o StrictHostKeyChecking=no localhost@172.17.0.2 'docker pull ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest && docker run -p 5000:5000 ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest'
