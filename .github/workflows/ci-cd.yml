@@ -41,8 +41,8 @@ jobs:
         unzip sonar-scanner-cli.zip
         # Vérifier si le fichier existe après extraction
         ls -alh sonar-scanner-5.0.1.3006-linux
-        # Ajouter le binaire au PATH
-        export PATH=$PWD/sonar-scanner-5.0.1.3006-linux/bin:$PATH
+        # Ajouter le binaire au PATH (export dans le même shell)
+        echo "export PATH=$PWD/sonar-scanner-5.0.1.3006-linux/bin:$PATH" >> $GITHUB_ENV
         # Vérifier la version de sonar-scanner
         sonar-scanner --version
         echo "Installation du sonar-scanner terminée."
