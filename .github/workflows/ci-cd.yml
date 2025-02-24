@@ -36,13 +36,20 @@ jobs:
 
     - name: Install SonarScanner
       run: |
+        # Télécharger et décompresser le scanner
         curl -sSLo sonar-scanner-cli.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
         unzip sonar-scanner-cli.zip
+        # Vérifier si le fichier existe après extraction
+        ls -alh sonar-scanner-5.0.1.3006-linux
+        # Ajouter le binaire au PATH
         export PATH=$PWD/sonar-scanner-5.0.1.3006-linux/bin:$PATH
-        sonar-scanner --version  # Vérifie que l'installation a réussi et que le chemin est correct
+        # Vérifier la version de sonar-scanner
+        sonar-scanner --version
+        echo "Installation du sonar-scanner terminée."
 
     - name: Analyse SonarCloud
       run: |
+        echo "Lancement de l'analyse SonarCloud..."
         sonar-scanner \
           -Dsonar.organization=Maneo159 \
           -Dsonar.projectKey=pythonCICD \
