@@ -10,7 +10,7 @@ def data_manager():
 def test_add_user(data_manager):
     user = data_manager.add_user("Alice", 25)
     assert user["name"] == "Alice"
-    assert user["age"] == 24
+    assert user["age"] == 25
     assert len(data_manager.get_users()) == 1
 
 def test_get_users(data_manager):
