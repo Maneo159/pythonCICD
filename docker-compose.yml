@@ -9,12 +9,13 @@ services:
     volumes:
       - .:/app  # Cela permet de lier le code source local au conteneur pour le développement
     environment:
-      - FLASK_ENV=development  # Tu peux ajuster cet environnement en fonction de tes besoins
+      - FLASK_APP=app/main.py  # Assurez-vous que l'entrée de votre app Flask est bien spécifiée
+      - FLASK_ENV=development  # Mode développement
+      - DATABASE_URL=postgresql://user:password@db:5432/mon_projet_db  # URL de connexion à la base de données
     depends_on:
-      - db  # Si tu as une base de données, par exemple
+      - db  # Assurez-vous que l'application attend que la base de données soit prête avant de démarrer
     restart: unless-stopped  # Assure que le conteneur redémarre en cas de crash
 
-  # Optionnel : un service pour une base de données, si nécessaire (ici, PostgreSQL par exemple)
   db:
     image: postgres:13
     container_name: mon_projet_db
