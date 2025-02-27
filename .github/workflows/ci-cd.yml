@@ -80,7 +80,7 @@ jobs:
 
   sonarcloud:
     runs-on: ubuntu-latest
-    needs: [build, tests]  # Attendre que le job 'tests' soit terminé avant de lancer SonarCloud
+    needs: build
     steps:
     - name: Checkout du code
       uses: actions/checkout@v3
