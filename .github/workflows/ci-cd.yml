@@ -83,9 +83,9 @@ jobs:
 
     - name: Lancer Docker Compose en local
       run: |
-        docker-compose up --build -d
-        docker-compose ps
-        docker-compose logs app
+        docker-compose up --build -d  # Lance le conteneur en mode détaché
+        docker-compose ps  # Vérifie les conteneurs en cours d'exécution
+        docker-compose logs app  # Affiche les logs du conteneur 'app'
 
     - name: Vérifier que l'application fonctionne
       run: |
@@ -93,4 +93,4 @@ jobs:
 
     - name: Arrêter Docker Compose
       run: |
-        docker-compose down
+        docker-compose down  # Arrête les conteneurs
