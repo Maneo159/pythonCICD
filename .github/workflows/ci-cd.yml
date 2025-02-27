@@ -40,6 +40,10 @@ jobs:
         docker build -t ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest .
         docker push ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest
 
+     - name: Vérifier l'image sur Docker Hub
+       run: |
+         docker pull ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest
+
   sonarcloud:
     runs-on: ubuntu-latest
     needs: build  # SonarCloud démarre après le build
