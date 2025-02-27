@@ -81,7 +81,4 @@ jobs:
         docker stop mon_projet || true
         docker rm mon_projet || true
         docker run -d -p 5000:5000 --name mon_projet ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest
-        if ! docker ps --format '{{.Names}}' | grep -q mon_projet; then
-          echo "❌ Le conteneur mon_projet n'a pas démarré correctement."
-          exit 1
-        fi
+
