@@ -90,5 +90,5 @@ jobs:
     - name: Vérifier que l'application fonctionne
       run: |
         sleep 10
-        curl http://127.0.0.1:5000  # Change le port si nécessaire
+        curl http://127.0.0.1:5000/users  # Change le port si nécessaire
 
