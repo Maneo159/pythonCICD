@@ -74,3 +74,23 @@ jobs:
     steps:
     - name: Checkout du code
       uses: actions/checkout@v3
+
+    - name: Installer Docker Compose
+      run: |
+        sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+        sudo chmod +x /usr/local/bin/docker-compose
+        docker-compose --version
+
+    - name: Lancer Docker Compose en local
+      run: |
+        docker-compose up --build -d
+        docker-compose ps
+        docker-compose logs app
+
+    - name: Vérifier que l'application fonctionne
+      run: |
+        curl http://localhost:5000  # Change le port si nécessaire
+
+    - name: Arrêter Docker Compose
+      run: |
+        docker-compose down
