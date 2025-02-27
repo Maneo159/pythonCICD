@@ -90,6 +90,6 @@ jobs:
 
     - name: Vérifier les conteneurs en cours d'exécution
       run: |
-        sleep 5
+        sleep 30
         docker ps -a
         docker logs mon_projet_${{ github.run_number }}
