@@ -54,11 +54,6 @@ jobs:
         unzip sonar-scanner-cli.zip
         # Ajouter temporairement le binaire au PATH
         export PATH=$PWD/sonar-scanner-5.0.1.3006-linux/bin:$PATH
-        # Vérification du répertoire où se trouve sonar-scanner
-        echo "Contenu du répertoire où le sonar-scanner a été installé :"
-        ls -al $PWD/sonar-scanner-5.0.1.3006-linux/bin
-        # Vérification du PATH
-        echo "Vérification du PATH : $PATH"
         which sonar-scanner || exit 1  # Vérifie si le binaire est bien trouvé
         sonar-scanner --version || exit 1  # Affiche la version du scanner
 
