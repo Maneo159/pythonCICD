@@ -91,7 +91,3 @@ jobs:
     - name: Vérifier les conteneurs en cours d'exécution
       run: |
         docker ps -a
-
-    - name: Vérifier les logs du conteneur
-      run: |
-        docker logs mon_projet || echo "Aucun log trouvé"
