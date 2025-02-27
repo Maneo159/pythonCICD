@@ -101,7 +101,13 @@ def delete_user(user_id):
         return jsonify({"message": "User deleted"}), 200
     return jsonify({"error": "User not found"}), 404
 
+def add_test_users():
+    data_manager.add_user("Alice", 30)
+    data_manager.add_user("Bob", 25)
+    data_manager.add_user("Charlie", 35)
 
+# Ajouter des utilisateurs de test lors du démarrage
+add_test_users()
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
