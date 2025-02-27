@@ -42,9 +42,29 @@ jobs:
         docker push ${{ secrets.DOCKER_USERNAME }}/mon_projet:${{ github.run_number }}
         docker push ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest
 
-  sonarcloud:
+  tests:
     runs-on: ubuntu-latest
     needs: build
+    steps:
+    - name: Checkout du code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Installer les dépendances
+      run: |
+        pip install -r requirements.txt
+
+    - name: Exécuter les tests unitaires
+      run: |
+        pytest --maxfail=1 --disable-warnings -q
+
+  sonarcloud:
+    runs-on: ubuntu-latest
+    needs: [build, tests]  # Attendre que le job 'tests' soit terminé avant de lancer SonarCloud
     steps:
     - name: Checkout du code
       uses: actions/checkout@v3
@@ -70,7 +90,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: [build, sonarcloud]
+    needs: [build, tests, sonarcloud]  # Attendre que les jobs précédents soient terminés
     steps:
     - name: Checkout du code
       uses: actions/checkout@v3
@@ -90,4 +110,3 @@ jobs:
     - name: Vérifier que l'application fonctionne
       run: |
         curl http://127.0.0.1:5000/users  # Change le port si nécessaire
-
