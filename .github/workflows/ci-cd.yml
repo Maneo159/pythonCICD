@@ -75,21 +75,21 @@ jobs:
     - name: Checkout du code
       uses: actions/checkout@v3
 
-    - name: Vérifier les images Docker après pull
+    - name: Set up kubectl
       run: |
-        docker pull ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest
-        docker images | grep mon_projet
+        curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kubectl
+        chmod +x kubectl
+        sudo mv kubectl /usr/local/bin/
 
-    - name: Supprimer l'ancien conteneur (si existe)
+    - name: Configurer le contexte Kubernetes
       run: |
-        docker ps -q --filter "name=mon_projet" | grep -q . && docker stop mon_projet && docker rm mon_projet || true
+        echo "${{ secrets.KUBE_CONFIG }}" > kubeconfig
+        export KUBECONFIG=kubeconfig
 
-    - name: Déployer un NOUVEAU conteneur
+    - name: Appliquer le déploiement Kubernetes
       run: |
-        docker run -d -p 5000:5000 --name mon_projet_${{ github.run_number }} --restart=always ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest
+        kubectl apply -f k8s/deployment.yaml
 
-    - name: Vérifier les conteneurs en cours d'exécution
+    - name: Vérifier les pods Kubernetes
       run: |
-        sleep 30
-        docker ps -a
-        docker logs mon_projet_${{ github.run_number }}
+        kubectl get pods
