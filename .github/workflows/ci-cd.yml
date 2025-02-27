@@ -40,7 +40,6 @@ jobs:
         docker build -t ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest .
         docker push ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest
 
-
   sonarcloud:
     runs-on: ubuntu-latest
     needs: build  # SonarCloud démarre après le build
@@ -50,18 +49,16 @@ jobs:
 
     - name: Install SonarScanner
       run: |
-        # Télécharger et décompresser le scanner
         curl -sSLo sonar-scanner-cli.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
         unzip sonar-scanner-cli.zip
-        # Ajouter temporairement le binaire au PATH
         export PATH=$PWD/sonar-scanner-5.0.1.3006-linux/bin:$PATH
-        which sonar-scanner || exit 1  # Vérifie si le binaire est bien trouvé
-        sonar-scanner --version || exit 1  # Affiche la version du scanner
+        which sonar-scanner || exit 1
+        sonar-scanner --version || exit 1
 
     - name: Analyse SonarCloud
       run: |
         echo "Lancement de l'analyse SonarCloud..."
-        export PATH=$PWD/sonar-scanner-5.0.1.3006-linux/bin:$PATH  # Ajouter temporairement à chaque étape
+        export PATH=$PWD/sonar-scanner-5.0.1.3006-linux/bin:$PATH
         sonar-scanner \
           -Dsonar.organization=maneo159 \
           -Dsonar.projectKey=Maneo159_pythonCICD \
@@ -76,13 +73,25 @@ jobs:
     - name: Checkout du code
       uses: actions/checkout@v3
 
-
-    
-
-    - name: Deploy to Server
+    - name: Vérifier les images Docker après pull
       run: |
         docker pull ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest
+        docker images | grep mon_projet
+
+    - name: Tester si l'image peut être exécutée
+      run: |
+        docker run -it --rm ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest /bin/sh || echo "Erreur lors du test de l'image"
+
+    - name: Déploiement du conteneur
+      run: |
         docker stop mon_projet || true
         docker rm mon_projet || true
         docker run -d -p 5000:5000 --name mon_projet ${{ secrets.DOCKER_USERNAME }}/mon_projet:latest
 
+    - name: Vérifier les conteneurs en cours d'exécution
+      run: |
+        docker ps -a
+
+    - name: Vérifier les logs du conteneur
+      run: |
+        docker logs mon_projet || echo "Aucun log trouvé"
