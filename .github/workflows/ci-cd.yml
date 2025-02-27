@@ -74,22 +74,3 @@ jobs:
     steps:
     - name: Checkout du code
       uses: actions/checkout@v3
-
-    - name: Set up kubectl
-      run: |
-        curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kubectl
-        chmod +x kubectl
-        sudo mv kubectl /usr/local/bin/
-
-    - name: Configurer le contexte Kubernetes
-      run: |
-        echo "${{ secrets.KUBE_CONFIG }}" > kubeconfig
-        export KUBECONFIG=kubeconfig
-
-    - name: Appliquer le déploiement Kubernetes
-      run: |
-        kubectl apply -f k8s/deployment.yaml
-
-    - name: Vérifier les pods Kubernetes
-      run: |
-        kubectl get pods
