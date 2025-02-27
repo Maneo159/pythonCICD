@@ -89,7 +89,7 @@ jobs:
 
     - name: Vérifier que l'application fonctionne
       run: |
-        curl http://localhost:5000  # Change le port si nécessaire
+        curl http://127.0.0.1:5000  # Change le port si nécessaire
 
     - name: Arrêter Docker Compose
       run: |
